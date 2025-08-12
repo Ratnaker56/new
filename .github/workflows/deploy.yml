@@ -7,7 +7,7 @@ on:
 
 env:
   PROJECT_ID: proposal-468813 # <-- TODO: REPLACE with your GCP Project ID
-  SERVICE_NAME: service-121978933141 # <-- TODO: REPLACE with your Cloud Run service name
+  SERVICE_NAME: my-php-service # <-- TODO: REPLACE with your Cloud Run service name
   REGION: us-east1 # <-- TODO: REPLACE with your GCP region
 
 jobs:
