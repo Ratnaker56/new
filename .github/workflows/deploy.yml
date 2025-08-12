@@ -6,9 +6,9 @@ on:
       - main # Trigger the workflow on pushes to the main branch
 
 env:
-  PROJECT_ID: your-gcp-project-id # <-- TODO: REPLACE with your GCP Project ID
-  SERVICE_NAME: my-php-service # <-- TODO: REPLACE with your Cloud Run service name
-  REGION: us-central1 # <-- TODO: REPLACE with your GCP region
+  PROJECT_ID: proposal-468813 # <-- TODO: REPLACE with your GCP Project ID
+  SERVICE_NAME: service-121978933141 # <-- TODO: REPLACE with your Cloud Run service name
+  REGION: us-east1 # <-- TODO: REPLACE with your GCP region
 
 jobs:
   build-and-test:
