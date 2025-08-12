@@ -1,0 +1,67 @@
+name: Build, Test and Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow on pushes to the main branch
+
+env:
+  PROJECT_ID: your-gcp-project-id # <-- TODO: REPLACE with your GCP Project ID
+  SERVICE_NAME: my-php-service # <-- TODO: REPLACE with your Cloud Run service name
+  REGION: us-central1 # <-- TODO: REPLACE with your GCP region
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, zip
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHPUnit tests
+        run: vendor/bin/phpunit
+
+  deploy:
+    name: Deploy to Cloud Run
+    needs: build-and-test # This job only runs if build-and-test succeeds
+    runs-on: ubuntu-latest
+
+    # Add permissions to the job to allow authentication with GCP
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/YOUR_GCP_PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/providers/github-provider' # <-- TODO: REPLACE
+          service_account: 'github-actions-sa@${{ env.PROJECT_ID }}.iam.gserviceaccount.com' # <-- TODO: REPLACE
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.REGION }}
+          # Use the Dockerfile from the source repository
+          source: ./
+          # Allow unauthenticated access to the service
+          flags: '--allow-unauthenticated'
+
+      - name: Output deployed URL
+        run: echo "Successfully deployed to ${{ steps.deploy.outputs.url }}"
