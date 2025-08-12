@@ -49,7 +49,7 @@ jobs:
         id: auth
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: 'projects/YOUR_GCP_PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/providers/github-provider' # <-- TODO: REPLACE
+          workload_identity_provider: 'projects/121978933141/locations/global/workloadIdentityPools/github-pool/providers/github-provider' # <-- TODO: REPLACE
           service_account: 'github-actions-sa@${{ env.PROJECT_ID }}.iam.gserviceaccount.com' # <-- TODO: REPLACE
 
       - name: Deploy to Cloud Run
