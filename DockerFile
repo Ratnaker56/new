@@ -1,0 +1,24 @@
+# Use the official PHP 8.2 image with Apache
+FROM php:8.2-apache
+
+# Set the document root to be the 'public' directory
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Enable apache rewrite module
+RUN a2enmod rewrite
+
+# Copy application code
+WORKDIR /var/www/html
+COPY . .
+
+# Install composer and dependencies
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install production dependencies only
+RUN composer install --no-dev --optimize-autoloader
+
+# Change ownership of the files to the web server user
+RUN chown -R www-data:www-data /var/www/html
+
+EXPOSE 80

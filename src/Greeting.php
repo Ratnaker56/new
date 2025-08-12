@@ -1,0 +1,14 @@
+<?php
+// src/Greeting.php
+namespace App;
+
+class Greeting
+{
+    public static function generate(string $name = 'World'): string
+    {
+        if (empty($name)) {
+            $name = 'World';
+        }
+        return "Hello, " . htmlspecialchars($name) . "!";
+    }
+}
